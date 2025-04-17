@@ -25,7 +25,7 @@ const formSchema = z.object({
   password: z.string().min(8, 'Password must be at least 8 characters'),
 });
 
-export default function LoginPage() {
+export default function LoginPage({ onLogin }: { onLogin: () => void }) {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -41,34 +41,27 @@ export default function LoginPage() {
   // Handle form submission
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    
     try {
       const response = await fetch(`${config.apiUrl}/login`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',  // This ensures cookies are sent with the request
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(values),
       });
-      
+  
       const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
-      }
-      
-      // Show success message
+  
+      if (!response.ok) throw new Error(data.message || 'Login failed');
+  
       toast.success('You have been logged in successfully.');
+  
+      // Call onLogin and wait for it to complete before navigating
+      await onLogin();
       
-      // Add a small delay before navigation to ensure the toast is displayed
-      // and state updates are processed
-      setTimeout(() => {
-        navigate('/dashboard', { replace: true });
-      }, 100);
+      // Now navigate without setTimeout
+      navigate('/dashboard');
       
     } catch (error) {
-      // Show error message
       toast.error(error instanceof Error ? error.message : 'Something went wrong');
     } finally {
       setIsLoading(false);

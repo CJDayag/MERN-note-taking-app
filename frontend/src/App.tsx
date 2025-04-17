@@ -13,39 +13,56 @@ import ViewNotes from '@/pages/ViewNotes';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  
+
   // Check authentication status on mount
-  useEffect(() => {
-    const checkAuthStatus = async () => {
-      try {
-        const response = await fetch(`${config.apiUrl}/profile`, {
-          ...config.defaultFetchOptions,
-        });
-        
-        setIsAuthenticated(response.ok);
-      } catch (error) {
-        setIsAuthenticated(false);
-      }
-    };
-    
-    checkAuthStatus();
-  }, []);
   
-  // Protected route component
+  const checkAuthStatus = async () => {
+    try {
+      const response = await fetch(`${config.apiUrl}/profile`, {
+        ...config.defaultFetchOptions,
+        credentials: 'include', // make sure cookies are sent
+      });
+      
+      if (response.ok) {
+        const userData = await response.json();
+        console.log('User authenticated:', userData);
+        setIsAuthenticated(true);
+        // You can also store user data in state if needed
+        // setUserData(userData);
+        return true;
+      } else {
+        console.log('Authentication failed');
+        setIsAuthenticated(false);
+        return false;
+      }
+    } catch (error) {
+      console.error('Auth check error:', error);
+      setIsAuthenticated(false);
+      return false;
+    }
+  };
+  
+  // Then in your onLogin prop passed to LoginPage
+  const handleLogin = async () => {
+    const success = await checkAuthStatus();
+    return success;
+  };
+
+  // Protected route component (without redundant authentication check)
   const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     if (isAuthenticated === null) {
-      // Still checking auth status
       return (
         <div className="flex items-center justify-center h-screen">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
         </div>
       );
     }
-    
+
+    // Redirect unauthenticated users to the login page
     if (!isAuthenticated) {
-      return <Navigate to="/login" />;
+      return <Navigate to="/" />;
     }
-    
+
     return <>{children}</>;
   };
 
@@ -53,58 +70,57 @@ function App() {
     <Router>
       <Routes>
         {/* Public routes */}
-        <Route path="/" element={<Navigate to="/login" />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/" element={<LoginPage onLogin={handleLogin} />} />
         <Route path="/register" element={<RegisterPage />} />
         
         {/* Protected routes */}
-        <Route 
-          path="/dashboard" 
+        <Route
+          path="/dashboard"
           element={
             <ProtectedRoute>
               <Dashboard />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/notes" 
+        <Route
+          path="/notes"
           element={
             <ProtectedRoute>
               <Dashboard />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/profile" 
+        <Route
+          path="/profile"
           element={
             <ProtectedRoute>
               <ProfilePage />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/notes/new" 
+        <Route
+          path="/notes/new"
           element={
             <ProtectedRoute>
               <CreateNote />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/notes/archived" 
+        <Route
+          path="/notes/archived"
           element={
             <ProtectedRoute>
               <ArchivedNotes />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/notes/:id" 
+        <Route
+          path="/notes/:id"
           element={
             <ProtectedRoute>
               <ViewNotes />
             </ProtectedRoute>
-          } 
+          }
         />
         
         {/* Add other protected routes as needed */}

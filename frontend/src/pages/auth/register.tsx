@@ -72,7 +72,7 @@ export default function RegisterPage() {
       );
       
       // Redirect to login page
-      navigate('/login');
+      navigate('/');
     } catch (error) {
       // Show error message
       toast.error(error instanceof Error ? error.message : 'Something went wrong',);
@@ -228,7 +228,7 @@ export default function RegisterPage() {
           <CardFooter className="flex flex-col space-y-4">
             <div className="text-sm text-muted-foreground text-center">
               <span>Already have an account? </span>
-              <Link to="/login" className="font-medium text-primary hover:underline">
+              <Link to="/" className="font-medium text-primary hover:underline">
                 Sign in instead
               </Link>
             </div>
