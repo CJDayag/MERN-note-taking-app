@@ -86,7 +86,7 @@ export default function ProfilePage() {
         throw new Error('Failed to update profile');
       }
 
-      const data = await response.json();
+      await response.json();
       setUserProfile(prevProfile => ({
         ...prevProfile!,
         firstName: formData.firstName,
