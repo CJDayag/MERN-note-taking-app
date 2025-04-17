@@ -9,7 +9,7 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET; 
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+const FRONTEND_URL = process.env.FRONTEND_URL;
 const db_password = process.env.DB_PASSWORD; 
 
 
@@ -163,8 +163,8 @@ app.post('/api/login', async (req, res) => {
         const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: '1h' });
         res.cookie('token', token, { 
             httpOnly: true, 
-            secure: process.env.NODE_ENV === 'production', 
-            sameSite: 'strict' 
+            secure: true, 
+            sameSite: 'None' 
         });
         res.json({ message: 'Logged in successfully' });
     } catch (error) {
