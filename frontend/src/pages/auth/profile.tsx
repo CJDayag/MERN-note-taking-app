@@ -46,7 +46,7 @@ export default function ProfilePage() {
 
         if (!response.ok) {
           if (response.status === 401) {
-            navigate('/login');
+            navigate('/');
             return;
           }
           throw new Error('Failed to fetch profile data');
@@ -118,7 +118,7 @@ export default function ProfilePage() {
         icon: <LogOut className="h-4 w-4" />,
       }
       );
-      navigate('/login');
+      navigate('/');
     } catch (error) {
       toast.error('Logout failed. Please try again.',
       );
