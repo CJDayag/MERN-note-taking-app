@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from "sonner";
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+
 import config from '@/config';
 import NoteCard from '@/components/notes/NoteCard';
 import EmptyState from '@/components/EmptyState';
@@ -189,14 +191,23 @@ export default function Dashboard() {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">My Notes</h1>
           <div className="flex items-center gap-2">
+            <TooltipProvider>
+            <Tooltip>
+            <TooltipTrigger>
             <Button 
               variant="outline" 
               size="icon"
               onClick={() => navigate('/profile')}
-              title="Profile"
             >
               <User className="h-4 w-4" />
             </Button>
+            </TooltipTrigger>
+            <TooltipContent>Profile</TooltipContent>
+            </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider>
+            <Tooltip>
+            <TooltipTrigger>
             <Button 
               variant="outline" 
               size="icon"
@@ -205,6 +216,10 @@ export default function Dashboard() {
             >
               <Archive className="h-4 w-4" />
             </Button>
+            </TooltipTrigger>
+            <TooltipContent>Archived Notes</TooltipContent>
+            </Tooltip>
+            </TooltipProvider>
             <Button 
               onClick={() => navigate('/notes/new')}
             >

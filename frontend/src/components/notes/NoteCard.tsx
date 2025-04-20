@@ -2,6 +2,7 @@ import { Pin, Archive, Trash2, Tag } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
 // Define types for note data
@@ -95,6 +96,9 @@ export default function NoteCard({
         <div className="flex items-start justify-between">
           <CardTitle className="text-xl line-clamp-2">{note.title}</CardTitle>
           {onPin && (
+            <TooltipProvider>
+            <Tooltip>
+            <TooltipTrigger>
             <Button 
               variant="ghost" 
               size="icon" 
@@ -106,6 +110,12 @@ export default function NoteCard({
             >
               <Pin className="h-4 w-4" />
             </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {note.isPinned ? "Unpin" : "Pin"}
+            </TooltipContent>
+            </Tooltip>
+            </TooltipProvider>
           )}
         </div>
       </CardHeader>
@@ -139,6 +149,9 @@ export default function NoteCard({
               // Otherwise render default actions
               <>
                 {onArchive && (
+                  <TooltipProvider>
+                  <Tooltip>
+                  <TooltipTrigger>
                   <Button 
                     variant="ghost" 
                     size="icon" 
@@ -150,9 +163,18 @@ export default function NoteCard({
                   >
                     <Archive className="h-4 w-4" />
                   </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    Archive
+                  </TooltipContent>
+                  </Tooltip>
+                  </TooltipProvider>
                 )}
                 
                 {onDelete && (
+                  <TooltipProvider>
+                  <Tooltip>
+                  <TooltipTrigger>
                   <Button 
                     variant="ghost" 
                     size="icon" 
@@ -164,6 +186,12 @@ export default function NoteCard({
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    Delete
+                  </TooltipContent>
+                  </Tooltip>
+                  </TooltipProvider>
                 )}
               </>
             )}
